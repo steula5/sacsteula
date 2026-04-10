@@ -2,25 +2,21 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { ArrowLeft, ArrowRight, Send, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Send, CheckCircle2, Wrench } from 'lucide-react';
 import StepIndicator from '@/components/form/StepIndicator';
 import Step1ClientType from '@/components/form/steps/Step1ClientType';
 import Step2ClientData from '@/components/form/steps/Step2ClientData';
 import Step3ProductData from '@/components/form/steps/Step3ProductData';
 import Step4ProblemDetails from '@/components/form/steps/Step4ProblemDetails';
 import Step5Evidence from '@/components/form/steps/Step5Evidence';
-import Step6SalesInternal from '@/components/form/steps/Step6SalesInternal';
-import Step7QualityInternal from '@/components/form/steps/Step7QualityInternal';
 import { type FormData, initialFormData } from '@/types/complaint-form';
 
 const STEP_LABELS = [
-  'Tipo de Cliente',
-  'Dados do Cliente',
+  'Identificação',
+  'Seus Dados',
   'Produto',
   'Problema',
-  'Evidências',
-  'Vendas',
-  'Qualidade',
+  'Fotos e Vídeos',
 ];
 
 const Index = () => {
@@ -54,29 +50,40 @@ const Index = () => {
 
   const handleNext = () => {
     if (!canProceed()) {
-      toast.error('Preencha todos os campos obrigatórios antes de continuar.');
+      toast.error('Por favor, preencha todos os campos obrigatórios antes de continuar.');
       return;
     }
-    setStep((s) => Math.min(s + 1, 6));
+    setStep((s) => Math.min(s + 1, 4));
   };
 
   const handlePrev = () => setStep((s) => Math.max(s - 1, 0));
 
   const handleSubmit = () => {
+    if (!canProceed()) {
+      toast.error('Por favor, preencha todos os campos obrigatórios.');
+      return;
+    }
     console.log('Form data:', data);
     setSubmitted(true);
-    toast.success('Formulário enviado com sucesso!');
+    toast.success('Solicitação enviada com sucesso!');
   };
 
   if (submitted) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <Card className="max-w-md w-full p-8 text-center space-y-4">
-          <CheckCircle2 className="w-16 h-16 text-accent mx-auto" />
-          <h1 className="text-2xl font-bold text-foreground">Enviado com sucesso!</h1>
-          <p className="text-muted-foreground">Seu registro de reclamação foi enviado para o setor de qualidade. Você receberá um retorno em breve.</p>
+      <div className="min-h-screen flex items-center justify-center p-4 bg-background">
+        <Card className="max-w-md w-full p-8 text-center space-y-4 border-t-4 border-t-primary">
+          <CheckCircle2 className="w-16 h-16 text-step-completed mx-auto" />
+          <h1 className="text-2xl font-bold text-foreground font-display uppercase tracking-wide">
+            Solicitação Enviada!
+          </h1>
+          <p className="text-muted-foreground">
+            Recebemos sua solicitação e nossa equipe técnica irá analisá-la. Você receberá um retorno em breve.
+          </p>
+          <p className="text-sm text-muted-foreground">
+            Obrigado por entrar em contato conosco.
+          </p>
           <Button onClick={() => { setData(initialFormData); setStep(0); setSubmitted(false); }} className="mt-4">
-            Novo registro
+            Enviar nova solicitação
           </Button>
         </Card>
       </div>
@@ -84,43 +91,53 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen py-6 px-4 md:py-10">
-      <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-            Registro de Reclamação e Solicitação de Laudo Técnico
-          </h1>
-          <p className="text-muted-foreground mt-2 text-sm md:text-base">
-            Preencha as informações para registro e análise do problema com o produto.
-          </p>
+    <div className="min-h-screen bg-background">
+      {/* Industrial Header */}
+      <div className="industrial-header py-5 px-4">
+        <div className="max-w-3xl mx-auto flex items-center gap-3">
+          <div className="bg-primary p-2 rounded">
+            <Wrench className="w-6 h-6 text-primary-foreground" />
+          </div>
+          <div>
+            <h1 className="text-lg md:text-xl font-bold text-primary-foreground font-display uppercase tracking-wider">
+              SAC — Atendimento ao Cliente
+            </h1>
+            <p className="text-sm text-primary-foreground/70">
+              Registro de reclamação e solicitação de laudo técnico
+            </p>
+          </div>
         </div>
+      </div>
 
-        <StepIndicator currentStep={step} totalSteps={7} labels={STEP_LABELS} />
+      <div className="max-w-3xl mx-auto py-6 px-4 md:py-8">
+        <StepIndicator currentStep={step} totalSteps={5} labels={STEP_LABELS} />
 
-        <Card className="p-6 md:p-8">
+        <Card className="p-6 md:p-8 border-t-4 border-t-primary shadow-sm">
           {step === 0 && <Step1ClientType value={data.clientType} onChange={(v) => updateField('clientType', v)} />}
           {step === 1 && <Step2ClientData data={data} onChange={updateField} />}
           {step === 2 && <Step3ProductData data={data} onChange={updateField} />}
           {step === 3 && <Step4ProblemDetails data={data} onChange={updateField} />}
           {step === 4 && <Step5Evidence data={data} onChange={updateField} />}
-          {step === 5 && <Step6SalesInternal data={data} onChange={updateField} />}
-          {step === 6 && <Step7QualityInternal data={data} onChange={updateField} />}
 
           <div className="flex justify-between mt-8 pt-6 border-t border-border">
             <Button variant="outline" onClick={handlePrev} disabled={step === 0} className="gap-2">
               <ArrowLeft className="w-4 h-4" /> Anterior
             </Button>
-            {step < 6 ? (
+            {step < 4 ? (
               <Button onClick={handleNext} className="gap-2">
                 Próximo <ArrowRight className="w-4 h-4" />
               </Button>
             ) : (
-              <Button onClick={handleSubmit} className="gap-2 bg-accent hover:bg-accent/90 text-accent-foreground">
-                <Send className="w-4 h-4" /> Enviar para Qualidade
+              <Button onClick={handleSubmit} className="gap-2">
+                <Send className="w-4 h-4" /> Enviar Solicitação
               </Button>
             )}
           </div>
         </Card>
+
+        <p className="text-center text-xs text-muted-foreground mt-4">
+          Após o envio, nossa equipe de qualidade analisará sua solicitação e entrará em contato.
+        </p>
       </div>
     </div>
   );

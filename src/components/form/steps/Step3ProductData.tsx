@@ -12,17 +12,18 @@ interface Props {
 const Step3ProductData = ({ data, onChange }: Props) => {
   return (
     <div className="space-y-5">
-      <h2 className="form-section-title">Dados do Produto</h2>
+      <h2 className="form-section-title">Informações do Produto</h2>
+      <p className="text-sm text-muted-foreground">Conte-nos sobre o produto com problema.</p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField label="Nome / código do produto" required value={data.nomeProduto} onChange={(v) => onChange('nomeProduto', v)} />
+        <FormField label="Nome ou código do produto" required value={data.nomeProduto} onChange={(v) => onChange('nomeProduto', v)} hint="Confira na embalagem ou na nota fiscal" />
         <FormField label="Quantidade com problema" required value={data.quantidadeProblema} onChange={(v) => onChange('quantidadeProblema', v)} />
         <FormField label="Código do lote" value={data.codigoLote} onChange={(v) => onChange('codigoLote', v)} hint="Opcional — confira na embalagem" />
         <FormField label="Data da compra" required value={data.dataCompra} onChange={(v) => onChange('dataCompra', maskDate(v))} placeholder="DD/MM/AAAA" />
-        <FormField label="Data em que o problema foi identificado" required value={data.dataProblema} onChange={(v) => onChange('dataProblema', maskDate(v))} placeholder="DD/MM/AAAA" />
+        <FormField label="Quando o problema apareceu?" required value={data.dataProblema} onChange={(v) => onChange('dataProblema', maskDate(v))} placeholder="DD/MM/AAAA" />
       </div>
 
       <div className="space-y-3 pt-2">
-        <Label className="form-label-required text-sm font-medium">O produto já foi utilizado?</Label>
+        <Label className="form-label-required text-sm font-medium">Você já utilizou o produto?</Label>
         <RadioGroup value={data.produtoUtilizado} onValueChange={(v) => onChange('produtoUtilizado', v)} className="flex gap-6">
           <div className="flex items-center gap-2">
             <RadioGroupItem value="sim" id="uso-sim" />
