@@ -117,7 +117,7 @@ const Index = () => {
       {/* Industrial Header */}
       <div className="industrial-header py-5 px-4">
         <div className="max-w-3xl mx-auto flex items-center gap-3">
-          <img src="/Logo/Logo.png" alt="Steula" className="h-10" />
+          <img src={`${import.meta.env.BASE_URL}Logo/Logo.png`} alt="Steula" className="h-10" />
           <div>
             <h1 className="text-lg md:text-xl font-bold text-primary-foreground font-display uppercase tracking-wider">
               SAC — Atendimento ao Cliente
